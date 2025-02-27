@@ -56,7 +56,7 @@ jobs:
       - name: 🔍 Lint du code
         run: npm run lint
 
-      - name: 🧪 Tests unitaires
+      - name: 🧪 Lancement des tests unitaires
         run: npm run test
 
       - name: 🧪 Tests e2e
