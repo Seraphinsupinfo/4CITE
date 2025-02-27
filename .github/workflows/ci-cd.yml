@@ -1,0 +1,74 @@
+name: CI/CD NestJS
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  # 🚀 Job de validation des PRs
+  pr-validation:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: 🛎️ Checkout du repo
+        uses: actions/checkout@v3
+
+      - name: 🔧 Installation de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: 📦 Installation des dépendances
+        run: npm install
+
+      - name: 🔍 Lint du code
+        run: npm run lint
+
+      - name: 🧪 Tests unitaires
+        run: npm run test
+
+      - name: 🧪 Tests e2e
+        run: npm run test:e2e
+
+  # 🚀 Job complet au merge sur main
+  full-pipeline:
+    runs-on: ubuntu-latest
+    needs: pr-validation
+    if: github.event_name == 'push'
+
+    steps:
+      - name: 🛎️ Checkout du repo
+        uses: actions/checkout@v3
+
+      - name: 🔧 Installation de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: 📦 Installation des dépendances
+        run: npm install
+
+      - name: 🔍 Lint du code
+        run: npm run lint
+
+      - name: 🧪 Tests unitaires
+        run: npm run test
+
+      - name: 🧪 Tests e2e
+        run: npm run test:e2e
+
+      - name: 🛡️ Vérification de sécurité
+        run: npm audit --audit-level=high || echo "⚠️ Alerte sécurité, mais on continue"
+
+      - name: 🏗 Build du projet
+        run: npm run build
+
+      - name: 🚀 "Déploiement"
+        run: echo "Déploiement fictif terminé"
