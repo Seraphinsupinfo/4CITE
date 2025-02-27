@@ -9,7 +9,6 @@ on:
       - main
 
 jobs:
-  # 🚀 Job de validation des PRs
   pr-validation:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
@@ -36,7 +35,6 @@ jobs:
       - name: 🧪 Tests e2e
         run: npm run test:e2e
 
-  # 🚀 Job complet au merge sur main
   full-pipeline:
     runs-on: ubuntu-latest
     needs: pr-validation
