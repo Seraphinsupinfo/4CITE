@@ -29,9 +29,19 @@
             <h2 class="fw-bold mb-2">Rechercher un Hotel</h2>
             <p class="mb-0">Ou allez vous ?</p>
           </div>
-          <form class="d-flex justify-content-center flex-wrap flex-lg-nowrap" method="post" data-bs-theme="light">
-            <div class="my-2"><input class="border rounded-pill shadow-sm form-control ps-5 pe-5" type="email" name="searchbar" placeholder="Une ville, un hotel etc......"></div>
-            <div class="my-2"><button class="btn btn-primary shadow ms-2" type="submit">Rechercher</button></div>
+          <form class="d-flex justify-content-center align-items-center flex-wrap flex-lg-nowrap gap-2" method="post" data-bs-theme="light">
+            <!-- Input -->
+            <div class="position-relative">
+              <input class="border rounded-pill shadow-sm form-control ps-4 pe-5"
+                     type="text" name="searchbar" placeholder="Une ville, un hôtel, etc..."
+                     style="height: 50px;">
+            </div>
+
+            <!-- Bouton -->
+            <button class="btn btn-primary shadow rounded-circle d-flex align-items-center justify-content-center"
+                    type="submit" style="width: 50px; height: 50px;">
+              <i class="bi bi-search"></i>
+            </button>
           </form>
         </div>
       </div>
