@@ -1,6 +1,6 @@
-import { Request } from 'express';
+import { Request } from 'src/types/express';
 
-declare module 'express' {
+declare module 'src/types/express' {
   export interface Request {
     user?: {
       id: number;
