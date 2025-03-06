@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { AppService } from './business/app.service';
 import { Hotel } from './data_acces_layer/create-hotel.dto';
 import { User } from './data_acces_layer/create-user.dto';
 import { Booking } from './data_acces_layer/create-booking.dto';
@@ -29,6 +28,6 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
   ],
   controllers: [UserController],
-  providers: [AppService, UserService],
+  providers: [UserService],
 })
 export class AppModule {}
