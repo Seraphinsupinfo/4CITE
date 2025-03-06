@@ -7,6 +7,8 @@ import { Booking } from './data_acces_layer/create-booking.dto';
 import { UserController } from './controller/user.controller';
 import { UserService } from './business/user.service';
 import { AuthModule } from './auth/auth.module';
+import { HotelController } from './controller/hotel.controller';
+import { HotelService } from './business/hotel.service';
 
 @Module({
   imports: [
@@ -27,7 +29,7 @@ import { AuthModule } from './auth/auth.module';
     TypeOrmModule.forFeature([Hotel, User, Booking]),
     AuthModule,
   ],
-  controllers: [UserController],
-  providers: [UserService],
+  controllers: [UserController, HotelController],
+  providers: [UserService, HotelService],
 })
 export class AppModule {}

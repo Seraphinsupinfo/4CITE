@@ -1,15 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  BadRequestException,
-  Get,
-  UseGuards,
-  Param,
-  ForbiddenException,
-  Req,
-  Put, Delete,
-} from '@nestjs/common';
+import { Controller, Post, Body, BadRequestException, Get, UseGuards, Param, ForbiddenException, Req, Put, Delete, } from '@nestjs/common';
   import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
   import { UserService } from '../business/user.service';
   import { creationUserObject, updateUserObject } from '../data_acces_layer/create-user.dto';
@@ -26,12 +15,12 @@ import {
     @ApiOperation({ summary: 'Create a new user' })
     @ApiResponse({ status: 201, description: 'The user has been successfully created.' })
     @ApiResponse({ status: 400, description: 'Bad Request.' })
-    async createUser(@Body() createUserWithConfirmationDto: creationUserObject) {
-      const { password, confirmPassword } = createUserWithConfirmationDto;
+    async createUser(@Body() user: creationUserObject) {
+      const { password, confirmPassword } = user;
       if (password !== confirmPassword) {
         throw new BadRequestException('Passwords do not match');
       }
-      return this.userService.createUser(createUserWithConfirmationDto);
+      return this.userService.createUser(user);
     }
 
     @Get(':id')
