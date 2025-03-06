@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './controller/app.controller';
 import { AppService } from './business/app.service';
 import { Hotel } from './data_acces_layer/create-hotel.dto';
 import { User } from './data_acces_layer/create-user.dto';
@@ -29,7 +28,7 @@ import { AuthModule } from './auth/auth.module';
     TypeOrmModule.forFeature([Hotel, User, Booking]),
     AuthModule,
   ],
-  controllers: [AppController, UserController],
+  controllers: [UserController],
   providers: [AppService, UserService],
 })
 export class AppModule {}
