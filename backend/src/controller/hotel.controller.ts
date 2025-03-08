@@ -42,4 +42,39 @@ export class HotelController {
   async getAllHotels(@Query('sortBy') sortBy: string = 'creationDate', @Query('limit') limit: number = 10) {
     return this.hotelService.getAllHotels(sortBy, limit);
   }
+
+  @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Update a hotel'})
+  @ApiResponse({ status: 200, description: 'Hotel updated.'})
+  @ApiResponse({ status: 400, description: 'Bad Request.'})
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 404, description: 'Not Found.' })
+  async updateHotel(@Param('id') id: number, @Body() hotel: Hotel, @Req() req: Request) {
+    const user = req.user as { id: number; pseudo: string; role: string };
+    if (AccesAutorisationGuard.isUserAdmin(user)) {
+      return this.hotelService.updateHotel(id, hotel);
+    } else {
+      throw new ForbiddenException('You are not allowed to access this resource');
+    }
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Delete a hotel' })
+  @ApiResponse({ status: 200, description: 'Hotel deleted.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 404, description: 'Not Found.' })
+  async deleteHotel(@Param('id') id: number, @Req() req: Request) {
+    const user = req.user as { id: number; pseudo: string; role: string };
+    if (AccesAutorisationGuard.isUserAdmin(user)) {
+      await this.hotelService.deleteHotel(id);
+      return { message: 'Hotel has been successfully deleted' };
+    } else {
+      throw new ForbiddenException('You are not allowed to access this resource');
+    }
+  }
 }

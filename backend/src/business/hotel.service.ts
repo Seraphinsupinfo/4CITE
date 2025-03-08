@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -17,7 +17,11 @@ export class HotelService {
   }
 
   async getHotelById(id: number) {
-    return this.hotelRepository.findOne({ where: { id } });
+    const hotel = await this.hotelRepository.findOne({ where: { id } });
+    if (!hotel) {
+      throw new NotFoundException(`Hotel with ID ${id} not found`);
+    }
+    return hotel;
   }
 
   async getAllHotels(sortBy: string, limit: number) {
@@ -30,5 +34,22 @@ export class HotelService {
       order: { [sortBy]: 'ASC' },
       take: limit,
     });
+  }
+
+  async updateHotel(id: number, hotel: Hotel) {
+    const existingHotel = await this.hotelRepository.findOne({ where: { id } });
+    if (!existingHotel) {
+      throw new NotFoundException(`Hotel with ID ${id} not found`);
+    }
+    await this.hotelRepository.update(id, omit(hotel, ['id']));
+    return this.hotelRepository.findOne({ where: { id } });
+  }
+
+  async deleteHotel(id: number) {
+    const hotel = await this.hotelRepository.findOne({ where: { id } });
+    if (!hotel) {
+      throw new NotFoundException(`Hotel with ID ${id} not found`);
+    }
+    await this.hotelRepository.delete(id);
   }
 }
