@@ -4,12 +4,13 @@ import { Controller, Post, Body, BadRequestException, Get, UseGuards, Param, For
   import { creationUserObject, updateUserObject } from '../data_acces_layer/create-user.dto';
   import { AccesAutorisationGuard, JwtAuthGuard } from '../auth/jwt-auth.guard';
   import { Request } from 'express';
+import { BookingService } from '../business/booking.service';
 
   @ApiTags('users')
   @Controller('users')
   @ApiBearerAuth('JWT-auth')
   export class UserController {
-    constructor(private readonly userService: UserService) {}
+    constructor(private readonly userService: UserService, private readonly bookingService: BookingService) {}
 
     @Post()
     @ApiOperation({ summary: 'Create a new user' })
@@ -61,9 +62,24 @@ import { Controller, Post, Body, BadRequestException, Get, UseGuards, Param, For
     @ApiResponse({ status: 403, description: 'Forbidden.' })
     async deleteUser(@Param('id') id: number, @Req() req: Request) {
       const user = req.user as { id: number; pseudo: string; role: string };
-      if (AccesAutorisationGuard.isUserAdmin(user) || AccesAutorisationGuard.isUserOwner(user, id)) {
+      if (AccesAutorisationGuard.isUserOwner(user, id)) {
         await this.userService.deleteUser(id);
         return { message: 'User has been successfully deleted' };
+      } else {
+        throw new ForbiddenException('You are not allowed to access this resource');
+      }
+    }
+
+    @Get(':id/bookings')
+    @UseGuards(JwtAuthGuard)
+    @ApiOperation({ summary: 'Get all bookings of a user' })
+    @ApiResponse({ status: 200, description: 'The bookings have been successfully retrieved.' })
+    @ApiResponse({ status: 401, description: 'Unauthorized.' })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
+    async getUserBookings(@Param('id') id: number, @Req() req: Request) {
+      const user = req.user as { id: number; pseudo: string; role: string };
+      if (AccesAutorisationGuard.isUserOwner(user, id)) {
+        return this.bookingService.getUserBookings(id);
       } else {
         throw new ForbiddenException('You are not allowed to access this resource');
       }

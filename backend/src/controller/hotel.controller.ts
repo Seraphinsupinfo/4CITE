@@ -5,8 +5,8 @@ import { Request } from 'express';
 import { Hotel } from '../data_acces_layer/create-hotel.dto';
 import { HotelService } from '../business/hotel.service';
 
-@ApiTags('hotel')
-@Controller('hotel')
+@ApiTags('hotels')
+@Controller('hotels')
 @ApiBearerAuth('JWT-auth')
 export class HotelController {
   constructor(private readonly hotelService: HotelService) {}

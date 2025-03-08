@@ -9,6 +9,8 @@ import { UserService } from './business/user.service';
 import { AuthModule } from './auth/auth.module';
 import { HotelController } from './controller/hotel.controller';
 import { HotelService } from './business/hotel.service';
+import { BookingController } from './controller/booking.controller';
+import { BookingService } from './business/booking.service';
 
 @Module({
   imports: [
@@ -29,7 +31,7 @@ import { HotelService } from './business/hotel.service';
     TypeOrmModule.forFeature([Hotel, User, Booking]),
     AuthModule,
   ],
-  controllers: [UserController, HotelController],
-  providers: [UserService, HotelService],
+  controllers: [UserController, HotelController, BookingController],
+  providers: [UserService, HotelService, BookingService],
 })
 export class AppModule {}
