@@ -35,7 +35,10 @@ export class BookingService {
   }
 
   async getUserBookings(userId: number): Promise<Booking[]> {
-    return this.bookingRepository.find({ where: { userId } });
+    return this.bookingRepository.find({
+      where: { userId },
+      relations: ['hotel'],
+    });
   }
 
   async getBookingsByUserEmail(userEmail: string): Promise<Booking[]> {
