@@ -2,8 +2,8 @@
 
 import {onMounted, ref} from "vue";
 import api from "@/services/axiosConfig.ts";
-
-const hotelsList = ref([]
+import type {Hotel} from "@/interfaces.ts";
+const hotelsList = ref(<Hotel[]>[]
 );
 
 async function getHotels() {
