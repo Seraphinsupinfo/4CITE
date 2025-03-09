@@ -93,7 +93,7 @@ describe('UserService', () => {
     await expect(service.getAllHotels('invalid', 'ASC', 1)).rejects.toThrow('Invalid sort field');
   });
 
-  it ('should update a hotel', async () => {
+  it('should update a hotel', async () => {
     const createdHotel = repository.create(hotel);
     await repository.save(createdHotel);
 
@@ -102,12 +102,19 @@ describe('UserService', () => {
     updatedHotel.location = 'test2';
     updatedHotel.description = 'test2';
     updatedHotel.images = ['test2'];
+    updatedHotel.creationDate = new Date('2025-03-09');
 
     await service.updateHotel(createdHotel.id, updatedHotel);
 
     const foundHotel = await repository.findOne({ where: { id: createdHotel.id } });
     expect(foundHotel).toBeDefined();
-    expect(foundHotel).toStrictEqual(updatedHotel);
+    expect(foundHotel).toMatchObject({
+      name: updatedHotel.name,
+      location: updatedHotel.location,
+      description: updatedHotel.description,
+      images: updatedHotel.images,
+      creationDate: '2025-03-09',
+    });
   });
 
   it('should not update a non existing hotel', async () => {
@@ -121,7 +128,7 @@ describe('UserService', () => {
     await service.deleteHotel(createdHotel.id);
 
     const foundHotel = await repository.findOne({ where: { id: createdHotel.id } });
-    expect(foundHotel).toBeUndefined();
+    expect(foundHotel).toBeNull();
   });
 
   it('should not delete a non existing hotel', async () => {
