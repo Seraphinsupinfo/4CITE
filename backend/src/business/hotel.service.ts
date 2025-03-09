@@ -24,14 +24,18 @@ export class HotelService {
     return hotel;
   }
 
-  async getAllHotels(sortBy: string, limit: number) {
+  async getAllHotels(sortBy: string, sortOrder: 'ASC' | 'DESC', limit: number) {
     const validSortFields = ['creationDate', 'name', 'location'];
     if (!validSortFields.includes(sortBy)) {
       throw new BadRequestException('Invalid sort field');
     }
 
+    if (!['ASC', 'DESC'].includes(sortOrder)) {
+      throw new BadRequestException('Invalid sort order');
+    }
+
     return this.hotelRepository.find({
-      order: { [sortBy]: 'ASC' },
+      order: { [sortBy]: sortOrder },
       take: limit,
     });
   }

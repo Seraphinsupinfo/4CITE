@@ -39,8 +39,9 @@ export class HotelController {
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiQuery({ name: 'sortBy', required: false, description: 'Field to sort by', example: 'creationDate' })
   @ApiQuery({ name: 'limit', required: false, description: 'Number of results to return', example: 10 })
-  async getAllHotels(@Query('sortBy') sortBy: string = 'creationDate', @Query('limit') limit: number = 10) {
-    return this.hotelService.getAllHotels(sortBy, limit);
+  @ApiQuery({ name: 'order', required: false, description: 'Sort order', example: 'ASC' })
+  async getAllHotels(@Query('sortBy') sortBy: string = 'creationDate', @Query('limit') limit: number = 10, @Query('order') order: 'ASC' | 'DESC' = 'ASC') {
+    return this.hotelService.getAllHotels(sortBy, order, limit);
   }
 
   @Put(':id')
