@@ -13,5 +13,6 @@ export interface IReservation {
   endDate: Date;
   userId: number;
   hotelId: number;
+  hotel?: Hotel;
   isModified?: boolean;
 }

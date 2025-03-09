@@ -12,7 +12,7 @@ const props = defineProps({
 const userStore = useUserStore();
 const toastRef = ref<InstanceType<typeof ToastMessage> | null>(null);
 const mounted = ref(false);
-const isAdmin = userStore.user.role === "user"; //todo passer sur admin
+const isAdmin = userStore.user.role === "admin";
 
 const formatDate = (date: Date) => date.toISOString().split('T')[0];
 const today = new Date();
@@ -57,6 +57,26 @@ async function updateHotel() {
   }
 }
 
+async function deleteHotel() {
+  if (!confirm("Êtes-vous sûr de vouloir supprimer cet hôtel ?")) return;
+
+  try {
+    await api.delete(`/hotels/${props.id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    toastRef.value?.showToast('Hôtel supprimé avec succès!', 'success');
+    setTimeout(() => {
+      window.location.href = "/"; // Rediriger vers l'accueil
+    }, 1000);
+  } catch (error) {
+    console.error(error);
+    toastRef.value?.showToast('Erreur lors de la suppression.', 'error');
+  }
+}
+
 async function bookHotel() {
   try {
     await api.post(`/bookings`, {
@@ -74,6 +94,10 @@ async function bookHotel() {
     console.error(error);
     toastRef.value?.showToast('Erreur lors de la réservation. Veuillez réessayer.', 'error');
   }
+}
+
+function addNewImage() {
+  hotel.value.images.push(""); // Ajoute un champ vide pour une nouvelle image
 }
 
 onMounted(async () => {
@@ -102,6 +126,7 @@ onMounted(async () => {
         <!-- Image principale -->
         <div class="col-md-6">
           <img class="rounded img-fluid shadow main-image" :src="hotel.images[0]" />
+          <input v-if="isAdmin" v-model="hotel.images[0]" class="form-control mt-2" placeholder="Modifier URL de l'image principale" />
         </div>
 
         <!-- Cadre réservation -->
@@ -150,11 +175,13 @@ onMounted(async () => {
             <input v-if="isAdmin" v-model="hotel.images[index + 1]" class="form-control mt-2" placeholder="Modifier URL" />
           </div>
         </div>
+        <button v-if="isAdmin" class="btn btn-secondary mt-3" @click="addNewImage">Ajouter une image</button>
       </div>
 
-      <!-- Bouton d'enregistrement (admin uniquement) -->
+      <!-- Boutons d'administration -->
       <div v-if="isAdmin" class="text-center mt-4">
-        <button class="btn btn-success" @click="updateHotel">Enregistrer les modifications</button>
+        <button class="btn btn-success me-2" @click="updateHotel">Enregistrer les modifications</button>
+        <button class="btn btn-danger" @click="deleteHotel">Supprimer l'hôtel</button>
       </div>
     </div>
   </section>

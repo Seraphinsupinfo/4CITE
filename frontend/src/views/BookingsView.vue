@@ -4,14 +4,17 @@ import { useUserStore } from "@/stores/UserStore.ts";
 import api from "@/services/axiosConfig.ts";
 import type { IReservation } from "@/services/interfaces.ts";
 import { useRouter } from "vue-router";
-import ToastMessage from "@/components/toastMessage.vue"; // Importer le composant ToastMessage
+import ToastMessage from "@/components/toastMessage.vue";
+
 
 const reservations = ref<IReservation[]>([]);
 const modifiedReservations = ref<IReservation[]>([]);
 
+const email = ref("");
+const reservationId = ref("");
 const userStore = useUserStore();
 const router = useRouter();
-const toastRef = ref<InstanceType<typeof ToastMessage> | null>(null); // Référence pour interagir avec ToastMessage
+const toastRef = ref<InstanceType<typeof ToastMessage> | null>(null);
 
 async function getBookings() {
   try {
@@ -32,6 +35,45 @@ async function getBookings() {
   }
 }
 
+const searchReservations = async () => {
+  if (!email.value.trim() && !reservationId.value) {
+    toastRef.value?.showToast("Veuillez entrer un email ou un numéro de réservation", "warning");
+    return;
+  }
+
+  try {
+    let response;
+
+    if (email.value.trim()) {
+      response = await api.get(`/bookings`, {
+        params: { user_email: email.value.trim() },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+    } else if (reservationId.value) {
+      response = await api.get(`/bookings/${reservationId.value}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+    }
+
+    if (response && response.data) {
+      reservations.value = Array.isArray(response.data) ? response.data : [response.data];
+      modifiedReservations.value = reservations.value.map(reservation => ({
+        ...reservation,
+        isModified: false
+      }));
+    } else {
+      reservations.value = [];
+      toastRef.value?.showToast("Aucune réservation trouvée", "error");
+    }
+  } catch (error) {
+    console.error("Erreur lors de la récupération des réservations", error);
+    toastRef.value?.showToast("Une erreur est survenue lors de la recherche", "error");
+  }
+};
 onMounted(async () => {
   await getBookings();
 });
@@ -41,6 +83,7 @@ const consultItem = (id: number) => {
 };
 
 const canDelete = (endDate: string) => {
+
   const currentDate = new Date();
   const endDateObj = new Date(endDate);
   return currentDate < endDateObj;
@@ -98,19 +141,25 @@ const handleDateChange = (reservation: IReservation) => {
 </script>
 
 <template>
-  <toast-message ref="toastRef"></toast-message> <!-- Ajoute ici le composant ToastMessage -->
+  <toast-message ref="toastRef"></toast-message>
 
   <div class="container py-5">
-    <h2 class="mb-4">Mes réservations</h2>
+    <h2 v-if="userStore.user.role == 'admin'" class="mb-4">Gérer les réservations</h2>
+    <h2 v-else class="mb-4">Mes réservations</h2>
+    <div class="mb-4 d-flex gap-3" v-if="userStore.user.role == 'admin'">
+      <input v-model="email" class="form-control" placeholder="Rechercher par email" />
+      <input v-model="reservationId" class="form-control" placeholder="Rechercher par numéro de réservation" />
+      <button class="btn btn-primary" @click="searchReservations">Rechercher</button>
+    </div>
 
     <div class="row">
       <div v-for="reservation in modifiedReservations" :key="reservation.id" class="col-12 d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
         <div class="d-flex align-items-center">
-          <img class="ref-product-photo img-fluid" src="https://media-cdn.tripadvisor.com/media/photo-s/16/1a/ea/54/hotel-presidente-4s.jpg" alt="Product Image" style="max-width: 80px; margin-right: 15px;" />
+          <img class="ref-product-photo img-fluid" :src="reservation.hotel?.images[0]" alt="Product Image" style="max-width: 120px;  margin-right: 15px;" />
           <div>
-            <div class="fw-bold">{{ reservation.id }}</div>
-            <div class="text-muted">{{ reservation.hotelId }}</div>
-            <div class="fw-bold">{{ reservation.userId }}</div>
+            <div class="fw-bold">Réservation #{{ reservation.id }}</div>
+            <div>{{ reservation.hotel?.name }}</div>
+            <div class=" text-muted">{{ reservation.hotel?.location }}</div>
           </div>
         </div>
         <div class="d-flex align-items-center">
@@ -121,6 +170,7 @@ const handleDateChange = (reservation: IReservation) => {
               v-model="reservation.startDate"
               style="max-width: 150px;"
               @change="handleDateChange(reservation)"
+              :disabled="userStore.user.role == 'admin'"
             />
             <input
               type="date"
@@ -128,10 +178,12 @@ const handleDateChange = (reservation: IReservation) => {
               v-model="reservation.endDate"
               style="max-width: 150px;"
               @change="handleDateChange(reservation)"
+              :disabled="userStore.user.role == 'admin'"
             />
           </div>
           <button class="btn btn-outline-primary ms-3" @click="consultItem(reservation.hotelId)">Afficher l'hôtel</button>
           <button
+            v-if="userStore.user.role != 'admin'"
             class="btn btn-danger ms-3"
             :disabled="!reservation.endDate || !canDelete(reservation.endDate)"
             @click="removeReservation(reservation.id)"
@@ -139,7 +191,7 @@ const handleDateChange = (reservation: IReservation) => {
             Annuler la réservation
           </button>
           <button
-            v-if="reservation.isModified"
+            v-if="reservation.isModified && userStore.user.role != 'admin'"
             class="btn btn-success ms-3"
             @click="saveChanges(reservation)"
           >

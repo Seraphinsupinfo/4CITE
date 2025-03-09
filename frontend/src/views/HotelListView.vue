@@ -6,12 +6,18 @@ import type {Hotel} from "@/services/interfaces.ts";
 const hotelsList = ref(<Hotel[]>[]
 );
 
+
 async function getHotels() {
   try {
-    const response = await api.get("/hotels");
+    const response = await api.get("/hotels", {
+      params: {
+        sortBy: "creationDate",
+        limit: 100,
+      },
+    });
     hotelsList.value = response.data;
   } catch (error) {
-    console.error(error);
+    console.error("Erreur lors de la récupération des hôtels :", error);
   }
 }
 

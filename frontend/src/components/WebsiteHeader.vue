@@ -13,7 +13,7 @@ const userStore = useUserStore();
         <span class="navbar-text interactive" @click="router.push('/hotels')">Hôtels</span>
         <span class="navbar-text ps-sm-3 interactive" @click="router.push('/bookings')">Réservations</span>
         <span class="navbar-text pb-sm-2 ps-sm-3 interactive" @click="router.push('/account')" v-if="userStore.isLoggedIn">Mon compte</span>
-        <span class="navbar-text pb-sm-2 ps-sm-3 interactive adminText" @click="router.push('/admin')" v-if="userStore.isLoggedIn && userStore.user.role=='user'">Administration</span> <!-- todo passer sur admin -->
+        <span class="navbar-text pb-sm-2 ps-sm-3 interactive adminText" @click="router.push('/admin')" v-if="userStore.isLoggedIn && userStore.user.role=='admin'">Administration</span>
         <ul class="navbar-nav mx-auto"></ul><a v-if="!userStore.isLoggedIn" class="btn btn-primary shadow" role="button" @click="router.push('/login')" style="--bs-primary: #13262f;--bs-primary-rgb: 19,38,47;">Se connecter</a>
       </div>
     </div>

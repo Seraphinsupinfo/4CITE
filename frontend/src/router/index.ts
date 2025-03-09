@@ -7,7 +7,7 @@ import HotelListView from "@/views/HotelListView.vue";
 import ConsultHotel from "@/views/ConsultHotel.vue";
 import BookingsView from "@/views/BookingsView.vue";
 import AdminView from "@/views/AdminView.vue";
-import CreateHotel from "@/views/CreateHotel.vue"; // Supposons que vous avez cette vue
+import CreateHotel from "@/views/CreateHotel.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

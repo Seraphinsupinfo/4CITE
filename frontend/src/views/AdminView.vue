@@ -7,7 +7,7 @@ const userStore = useUserStore();
 const router = useRouter();
 
 onMounted(() => {
-  if (userStore.user.role !== "user") {
+  if (userStore.user.role !== "admin") {
     router.push("/");
   }
 });
@@ -25,8 +25,8 @@ function goTo(path: string) {
         <button class="btn btn-primary w-100 mb-3" @click="goTo('/admin/hotel/create')">
           🏨 Créer un hôtel
         </button>
-        <button class="btn btn-secondary w-100 mb-3" @click="goTo('/admin/bookings')">
-          📅 Gérer les réservations
+        <button class="btn btn-secondary w-100 mb-3" @click="goTo('bookings')">
+          📅 Afficher les réservations
         </button>
         <button class="btn btn-danger w-100" @click="goTo('/admin/accounts')">
           👤 Gestion des comptes
