@@ -7,10 +7,11 @@
     <div
       v-for="(toast, index) in toasts"
       :key="index"
-      class="toast align-items-center text-white bg-success border-0 show"
+      class="toast align-items-center text-white border-0 show"
       role="alert"
       aria-live="assertive"
       aria-atomic="true"
+      :class="getToastClass(toast.type)"
       :style="{ zIndex: 9999 - index }"
     >
       <div class="d-flex">
@@ -41,14 +42,24 @@ const toasts = ref<Toast[]>([]);
 const showToast = (message: string, type: Toast['type']) => {
   toasts.value.push({ message, type });
 
-  // Remove toast after 5 seconds
+  // Supprimer après 5 secondes
   setTimeout(() => {
     toasts.value.shift();
-  }, 5000); // Adjust duration as needed
+  }, 5000);
 };
 
 const removeToast = (index: number) => {
   toasts.value.splice(index, 1);
+};
+
+// Fonction pour gérer les classes dynamiquement
+const getToastClass = (type: Toast['type']) => {
+  return {
+    'bg-success': type === 'success',
+    'bg-danger': type === 'error',
+    'bg-info': type === 'info',
+    'bg-warning': type === 'warning',
+  };
 };
 
 defineExpose({

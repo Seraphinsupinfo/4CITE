@@ -152,6 +152,10 @@ const handleDateChange = (reservation: IReservation) => {
       <button class="btn btn-primary" @click="searchReservations">Rechercher</button>
     </div>
 
+    <div class="d-flex align-items-center" v-if="reservations.length == 0">
+      <span>Rien à afficher ici</span>
+    </div>
+
     <div class="row">
       <div v-for="reservation in modifiedReservations" :key="reservation.id" class="col-12 d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
         <div class="d-flex align-items-center">

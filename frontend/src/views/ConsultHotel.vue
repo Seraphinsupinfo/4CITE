@@ -92,7 +92,7 @@ async function bookHotel() {
     toastRef.value?.showToast('Réservation effectuée avec succès!', 'success');
   } catch (error) {
     console.error(error);
-    toastRef.value?.showToast('Erreur lors de la réservation. Veuillez réessayer.', 'error');
+    toastRef.value?.showToast(`Erreur lors de la réservation. Veuillez réessayer. ${error.response.data.message}`, 'error');
   }
 }
 
