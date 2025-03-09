@@ -2,7 +2,7 @@
 
 import {onMounted, ref} from "vue";
 import api from "@/services/axiosConfig.ts";
-import type {Hotel} from "@/interfaces.ts";
+import type {Hotel} from "@/services/interfaces.ts";
 const hotelsList = ref(<Hotel[]>[]
 );
 

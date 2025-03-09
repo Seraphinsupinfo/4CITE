@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import api from "@/services/axiosConfig.ts";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 interface DecodedToken {
   id: string;
@@ -50,7 +50,42 @@ export const useUserStore = defineStore("user", () => {
     }
   };
 
-  // Déconnexion
+  const updateUser = async (email: string, pseudo: string, newPassword: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("Aucun token trouvé, déconnexion...");
+      logout();
+      return;
+    }
+
+    try {
+      const decoded: DecodedToken = jwtDecode(token);
+      const { id, role } = decoded;
+
+      const updatedUser = {
+        id,
+        email,
+        pseudo,
+        role,
+        password: newPassword,
+      };
+
+      const response = await api.put(`/users/${id}`, updatedUser, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      user.value = { ...user.value, ...updatedUser };
+      localStorage.setItem("user", JSON.stringify(user.value));
+
+      console.log("Utilisateur mis à jour avec succès");
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour de l'utilisateur :", error);
+    }
+  };
+
+
   const logout = () => {
     user.value = null;
     isLoggedIn.value = false;
@@ -60,6 +95,7 @@ export const useUserStore = defineStore("user", () => {
 
   const getUser = async () => {
     return user.value;
-  }
-  return { user, isLoggedIn, fetchUserFromToken, logout, getUser };
+  };
+
+  return { user, isLoggedIn, fetchUserFromToken, logout, getUser, updateUser };
 });

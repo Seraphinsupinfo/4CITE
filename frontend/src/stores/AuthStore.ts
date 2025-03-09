@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import api from "@/services/axiosConfig.ts";
+import {useRouter} from "vue-router";
 
 export const useAuthStore = defineStore("auth", () => {
   const token = ref<string | null>(localStorage.getItem("token"));
@@ -25,6 +26,7 @@ export const useAuthStore = defineStore("auth", () => {
   const logout = () => {
     token.value = null;
     localStorage.removeItem("token");
+    window.location.reload();
   };
 
   return { token, login, logout };
