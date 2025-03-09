@@ -44,6 +44,7 @@ export class BookingService {
   async getBookingsByUserEmail(userEmail: string): Promise<Booking[]> {
     return this.bookingRepository.createQueryBuilder('booking')
       .innerJoin('booking.user', 'user')
+      .innerJoinAndSelect('booking.hotel', 'hotel')
       .where('user.email = :email', { email: userEmail })
       .getMany();
   }
