@@ -1,7 +1,7 @@
 import { Controller, Post, Body, BadRequestException, Get, UseGuards, Param, ForbiddenException, Req, Put, Delete, } from '@nestjs/common';
   import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
   import { UserService } from '../business/user.service';
-  import { creationUserObject, updateUserObject } from '../data_acces_layer/create-user.dto';
+  import { CreationUserObject, UpdateUserObject } from '../data_acces_layer/create-user.dto';
   import { AccesAutorisationGuard, JwtAuthGuard } from '../auth/jwt-auth.guard';
   import { Request } from 'express';
 import { BookingService } from '../business/booking.service';
@@ -16,11 +16,7 @@ import { BookingService } from '../business/booking.service';
     @ApiOperation({ summary: 'Create a new user' })
     @ApiResponse({ status: 201, description: 'The user has been successfully created.' })
     @ApiResponse({ status: 400, description: 'Bad Request.' })
-    async createUser(@Body() user: creationUserObject) {
-      const { password, confirmPassword } = user;
-      if (password !== confirmPassword) {
-        throw new BadRequestException('Passwords do not match');
-      }
+    async createUser(@Body() user: CreationUserObject) {
       return this.userService.createUser(user);
     }
 
@@ -45,7 +41,7 @@ import { BookingService } from '../business/booking.service';
     @ApiResponse({ status: 200, description: 'The user has been successfully updated.' })
     @ApiResponse({ status: 401, description: 'Unauthorized.' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    async updateUser(@Param('id') id: number, @Body() updatedUser: updateUserObject, @Req() req: Request) {
+    async updateUser(@Param('id') id: number, @Body() updatedUser: UpdateUserObject, @Req() req: Request) {
       const user = req.user as { id: number; pseudo: string; role: string };
       if (AccesAutorisationGuard.isUserAdmin(user) || AccesAutorisationGuard.isUserOwner(user, id)) {
         return this.userService.updateUser(id, updatedUser);

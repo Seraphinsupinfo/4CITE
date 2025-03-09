@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { creationUserObject, updateUserObject, User } from '../data_acces_layer/create-user.dto';
+import { CreationUserObject, UpdateUserObject, User } from '../data_acces_layer/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { omit } from 'lodash';
 
@@ -12,12 +12,16 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async createUser(userToCreate: creationUserObject): Promise<Partial<User>> {
-    const { email, pseudo, password } = userToCreate;
+  async createUser(userToCreate: CreationUserObject): Promise<Partial<User>> {
+    const { email, pseudo, password, confirmPassword } = userToCreate;
 
     const existingUser = await this.userRepository.findOne({ where: { email } });
     if (existingUser) {
       throw new BadRequestException('Email already exists');
+    }
+
+    if (password != confirmPassword) {
+      throw new BadRequestException('Passwords do not match');
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -35,10 +39,14 @@ export class UserService {
     return user ? omit(user, ['password']) : null;
   }
 
-  async updateUser(id: number, updatedUser: updateUserObject): Promise<Partial<User> | null> {
+  async updateUser(id: number, updatedUser: UpdateUserObject): Promise<Partial<User> | null> {
     const { email, pseudo, actualPassword, newPassword, confirmNewPassword } = updatedUser;
 
     const user = await this.userRepository.findOne({ where: { id } });
+
+    if (!user) {
+      throw new BadRequestException('User does not exist');
+    }
 
     if (user?.email != email) {
       const alreadyExistingEmail = await this.userRepository.findOne({ where: { email: email } });
@@ -62,10 +70,14 @@ export class UserService {
       await this.userRepository.update(id, { email, pseudo });
     }
 
-    return this.getUserById(id);
+    const userToReturn = await this.userRepository.findOne({ where: { id } });
+    return userToReturn ? omit(user, ['password']) : null;
   }
 
   async deleteUser(id: number): Promise<void> {
+    if (!(await this.userRepository.findOne({ where: { id } }))) {
+      throw new BadRequestException('User does not exist');
+    }
     await this.userRepository.delete(id);
   }
 }

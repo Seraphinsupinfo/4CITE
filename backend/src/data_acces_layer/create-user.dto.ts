@@ -31,7 +31,7 @@ export class User {
   role: Role;
 }
 
-export class creationUserObject {
+export class CreationUserObject {
   @ApiProperty({ example: 'user@example.com', description: 'The email of the user' })
   @IsEmail({}, { message: 'Invalid email address' })
   email: string;
@@ -53,7 +53,7 @@ export class creationUserObject {
   confirmPassword: string;
 }
 
-export class updateUserObject {
+export class UpdateUserObject {
   @ApiProperty({ example: 'user@example.com', description: 'The email of the user' })
   @IsEmail({}, { message: 'Invalid email address' })
   email?: string;
