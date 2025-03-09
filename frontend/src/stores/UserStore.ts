@@ -1,37 +1,65 @@
 import { defineStore } from "pinia";
+import { ref } from "vue";
+import api from "@/services/axiosConfig.ts";
+import {jwtDecode} from "jwt-decode";
 
-interface User {
-  firstName: string;
-  lastName: string;
-  email: string;
+interface DecodedToken {
+  id: string;
+  pseudo: string;
+  role: string;
+  exp: number;
 }
 
-export const useUserStore = defineStore("user", {
-  state: () => ({
-    user: JSON.parse(localStorage.getItem("user") || "null") as User | null,
-    isLoggedIn: localStorage.getItem("isLoggedIn") === "true",
-  }),
+interface User {
+  id: string;
+  pseudo: string;
+  email: string;
+  role: string;
+}
 
-  actions: {
-    login(user: User) {
-      this.user = user;
-      this.isLoggedIn = true;
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("isLoggedIn", "true");
-    },
+export const useUserStore = defineStore("user", () => {
+  const user = ref<User | null>(
+      localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : null
+  );
+  const isLoggedIn = ref(localStorage.getItem("token") !== null);
 
-    logout() {
-      this.user = null;
-      this.isLoggedIn = false;
-      localStorage.removeItem("user");
-      localStorage.removeItem("isLoggedIn");
-    },
+  const fetchUserFromToken = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      isLoggedIn.value = false;
+      user.value = null;
+      return;
+    }
 
-    updateUser(updatedUser: Partial<User>) {
-      if (this.user) {
-        this.user = { ...this.user, ...updatedUser };
-        localStorage.setItem("user", JSON.stringify(this.user));
-      }
-    },
-  },
+    try {
+      const decoded: DecodedToken = jwtDecode(token);
+      const { id, pseudo, role } = decoded;
+
+      const response = await api.get(`/users/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      user.value = { id, pseudo, email: response.data.email, role };
+
+      localStorage.setItem("user", JSON.stringify(user.value));
+      isLoggedIn.value = true;
+    } catch (error) {
+      console.error("Erreur lors de la récupération de l'utilisateur :", error);
+      logout();
+    }
+  };
+
+  // Déconnexion
+  const logout = () => {
+    user.value = null;
+    isLoggedIn.value = false;
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+  };
+
+  const getUser = async () => {
+    return user.value;
+  }
+  return { user, isLoggedIn, fetchUserFromToken, logout, getUser };
 });

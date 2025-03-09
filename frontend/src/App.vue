@@ -2,6 +2,18 @@
 import {  RouterView } from 'vue-router'
 import WebsiteHeader from "@/components/WebsiteHeader.vue";
 import WebsiteFooter from "@/components/WebsiteFooter.vue";
+import {onMounted} from "vue";
+import {loadScript} from "@/assets/scripts/LoadExternalScripts.ts";
+import("/public/js/bs-init.js?h=4f6030575bc01c04c2cd8963f3a0d244")
+import("/public/js/bold-and-bright.js?h=78569998362133b84a76614652f3624f")
+
+onMounted(async () => {
+  try {
+    await loadScript("https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js");
+  } catch (error) {
+    console.error(error);
+  }
+});
 
 </script>
 
@@ -26,7 +38,7 @@ import WebsiteFooter from "@/components/WebsiteFooter.vue";
   </html>
 </template>
 <style>
-.btn{
+.btn-blue{
   background-color: #145C9E;
 }
 </style>
