@@ -69,7 +69,7 @@ async function deleteHotel() {
 
     toastRef.value?.showToast('Hôtel supprimé avec succès!', 'success');
     setTimeout(() => {
-      window.location.href = "/"; // Rediriger vers l'accueil
+      window.location.href = "/";
     }, 1000);
   } catch (error) {
     console.error(error);
@@ -97,7 +97,7 @@ async function bookHotel() {
 }
 
 function addNewImage() {
-  hotel.value.images.push(""); // Ajoute un champ vide pour une nouvelle image
+  hotel.value.images.push("");
 }
 
 onMounted(async () => {
@@ -107,7 +107,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <toast-message ref="toastRef"></toast-message> <!-- Toast -->
+  <toast-message ref="toastRef"></toast-message>
 
   <section class="py-5" v-if="mounted">
     <div class="container py-5">
@@ -121,20 +121,16 @@ onMounted(async () => {
         </div>
       </div>
 
-      <!-- Section principale avec image + description + cadre réservation -->
       <div class="row">
-        <!-- Image principale -->
         <div class="col-md-6">
           <img class="rounded img-fluid shadow main-image" :src="hotel.images[0]" />
           <input v-if="isAdmin" v-model="hotel.images[0]" class="form-control mt-2" placeholder="Modifier URL de l'image principale" />
         </div>
 
-        <!-- Cadre réservation -->
         <div class="col-md-4 offset-md-2">
           <div class="card bg-light border-dark shadow">
             <div class="card-body p-3">
               <h3 class="fw-bold text-center">Réserver maintenant</h3>
-              <h5 class="text-center fw-bold">$25</h5>
 
               <div class="mb-3">
                 <label for="startDate" class="form-label">Date d'arrivée</label>
@@ -145,9 +141,21 @@ onMounted(async () => {
                 <input type="date" id="endDate" class="form-control" v-model="endDate" />
               </div>
 
-              <button class="btn btn-primary d-block w-100" type="button" @click="bookHotel">
+              <button class="btn btn-primary d-block w-100" type="button" @click="bookHotel" v-if="userStore.isLoggedIn">
                 Réserver
               </button>
+
+              <div class="mb-3 mx-auto" v-else>
+                <span class="text-center w-100">
+                  Vous devez être connecté pour réserver
+                </span>
+                <br>
+                <a class="text-center mx-auto w-100">
+                 <span class="text-center mx-auto w-100">
+                  Se connecter
+                  </span>
+                </a>
+              </div>
             </div>
           </div>
         </div>

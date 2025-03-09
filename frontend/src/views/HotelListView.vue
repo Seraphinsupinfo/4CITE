@@ -43,7 +43,7 @@ await getHotels();
             </a>
             <div class="card-body d-flex justify-content-between align-items-center">
               <div>
-                <span class="badge bg-primary mb-2">À partir de 123$</span>
+                <span class="badge bg-success mb-2">Disponible</span>
                 <h4 class="fw-bold mb-1">{{ hotel.name }}</h4>
                 <p class="text-muted mb-0">{{ hotel.location }}</p>
               </div>

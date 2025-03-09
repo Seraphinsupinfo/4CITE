@@ -45,7 +45,7 @@
           </form>
         </div>
       </div>
-    </section><!-- End: Newsletter Banner -->
+    </section>
   </section>
 </template>
 <style scoped>
