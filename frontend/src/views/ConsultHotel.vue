@@ -150,10 +150,10 @@ onMounted(async () => {
                   Vous devez être connecté pour réserver
                 </span>
                 <br>
-                <a class="text-center mx-auto w-100">
-                 <span class="text-center mx-auto w-100">
+                <a class="text-center mx-auto w-100" href="/login">
+                  <button class="btn btn-primary d-block w-100">
                   Se connecter
-                  </span>
+                  </button>
                 </a>
               </div>
             </div>

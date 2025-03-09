@@ -19,7 +19,7 @@ interface User {
 
 export const useUserStore = defineStore("user", () => {
   const user = ref<User | null>(
-      localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : null
+    localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : null
   );
   const isLoggedIn = ref(localStorage.getItem("token") !== null);
 
@@ -50,7 +50,13 @@ export const useUserStore = defineStore("user", () => {
     }
   };
 
-  const updateUser = async (email: string, pseudo: string, newPassword: string) => {
+  const updateUserData = async (
+    email: string,
+    pseudo: string,
+    actualPassword: string,
+    newPassword: string | null = null,
+    confirmNewPassword: string | null = null
+  ) => {
     const token = localStorage.getItem("token");
     if (!token) {
       console.error("Aucun token trouvé, déconnexion...");
@@ -62,21 +68,23 @@ export const useUserStore = defineStore("user", () => {
       const decoded: DecodedToken = jwtDecode(token);
       const { id, role } = decoded;
 
-      const updatedUser = {
-        id,
+      const updatedData: Record<string, string | null> = {
         email,
         pseudo,
-        role,
-        password: newPassword,
+        actualPassword,
       };
+      if (newPassword && confirmNewPassword) {
+        updatedData.newPassword = newPassword;
+        updatedData.confirmNewPassword = confirmNewPassword;
+      }
 
-      const response = await api.put(`/users/${id}`, updatedUser, {
+      await api.put(`/users/${id}`, updatedData, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
 
-      user.value = { ...user.value, ...updatedUser };
+      user.value = { ...user.value, email, pseudo };
       localStorage.setItem("user", JSON.stringify(user.value));
 
       console.log("Utilisateur mis à jour avec succès");
@@ -84,7 +92,6 @@ export const useUserStore = defineStore("user", () => {
       console.error("Erreur lors de la mise à jour de l'utilisateur :", error);
     }
   };
-
 
   const logout = () => {
     user.value = null;
@@ -97,5 +104,5 @@ export const useUserStore = defineStore("user", () => {
     return user.value;
   };
 
-  return { user, isLoggedIn, fetchUserFromToken, logout, getUser, updateUser };
+  return { user, isLoggedIn, fetchUserFromToken, logout, getUser, updateUserData };
 });

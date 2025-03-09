@@ -9,6 +9,7 @@ import BookingsView from "@/views/BookingsView.vue";
 import AdminView from "@/views/AdminView.vue";
 import CreateHotel from "@/views/CreateHotel.vue";
 import RegisterView from "@/views/RegisterView.vue";
+import AdminAccountView from "@/views/AdminAccountView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -53,6 +54,11 @@ const router = createRouter({
       path: '/admin',
       name: 'admin',
       component: AdminView,
+    },
+    {
+      path: '/admin/accounts',
+      name: 'accounts-admin',
+      component: AdminAccountView,
     },
     {
       path: '/admin/hotel/create',
