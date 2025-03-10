@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import {useRouter} from "vue-router";
+
+const router = useRouter()
+
 </script>
 
 <template>
@@ -29,7 +33,7 @@
             <h2 class="fw-bold mb-2">Rechercher un Hotel</h2>
             <p class="mb-0">Ou allez vous ?</p>
           </div>
-          <form class="d-flex justify-content-center align-items-center flex-wrap flex-lg-nowrap gap-2" method="post" data-bs-theme="light">
+          <form class="d-flex justify-content-center align-items-center flex-wrap flex-lg-nowrap gap-2" @submit="router.push('hotels')" data-bs-theme="light">
             <!-- Input -->
             <div class="position-relative">
               <input class="border rounded-pill shadow-sm form-control ps-4 pe-5"
