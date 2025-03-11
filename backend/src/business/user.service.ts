@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreationUserObject, UpdateUserObject, User } from '../data_acces_layer/create-user.dto';
@@ -36,7 +36,10 @@ export class UserService {
 
   async getUserById(id: number): Promise<Partial<User> | null> {
     const user = await this.userRepository.findOne({ where: { id } });
-    return user ? omit(user, ['password']) : null;
+    if (!user) {
+      throw new NotFoundException('User does not exist');
+    }
+    return omit(user, ['password']);
   }
 
   async updateUser(id: number, updatedUser: UpdateUserObject): Promise<Partial<User> | null> {
@@ -70,8 +73,8 @@ export class UserService {
       await this.userRepository.update(id, { email, pseudo });
     }
 
-    const userToReturn = await this.userRepository.findOne({ where: { id } });
-    return userToReturn ? omit(user, ['password']) : null;
+    const updatedUserData = await this.userRepository.findOne({ where: { id } });
+    return updatedUserData ? omit(updatedUserData, ['password']) : null;
   }
 
   async deleteUser(id: number): Promise<void> {

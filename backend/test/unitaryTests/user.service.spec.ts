@@ -7,6 +7,7 @@ import * as dotenv from 'dotenv';
 import * as bcrypt from 'bcrypt';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { NotFoundException } from '@nestjs/common';
 
 dotenv.config();
 
@@ -112,10 +113,8 @@ describe('UserService', () => {
     expect(foundUser?.password).toBeUndefined();
   });
 
-  it ('should not find a non existing user by id', async () => {
-    const foundUser = await service.getUserById(-1);
-
-    expect(foundUser).toBeNull();
+  it('should not find a non existing user by id', async () => {
+    await expect(service.getUserById(-1)).rejects.toThrow(NotFoundException);
   });
 
   it('should update a user', async () => {

@@ -120,32 +120,93 @@ describe('UserController', () => {
       .set('Authorization', `Bearer ${token}`)
       .expect((res) => {
         expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty('id', createdUser.id);
         expect(res.body).toHaveProperty('email', user.email);
         expect(res.body).toHaveProperty('pseudo', user.pseudo);
-        expect(res.body).toHaveProperty('id', createdUser.id);
         expect(res.body).toHaveProperty('role', createdUser.role);
       });
   });
-//
-  //it('should update a user', async () => {
-  //  user.password = bcrypt.hashSync('password', 10);
-  //  const createdUser = await repository.save(user);
-//
-  //  const infos = { id: createdUser.id, pseudo: createdUser.pseudo, role: createdUser.role };
-  //  const token = jwtService.sign(infos);
-//
-  //  await logErrorResponse(
-  //    request(app.getHttpServer())
-  //      .put(`/users/${createdUser.id}`)
-  //      .set('Authorization', `Bearer ${token}`)
-  //      .send(updatedUser)
-  //      .expect((res) => {
-  //        console.log('Response body:', res.body);
-  //        expect(res.status).toBe(200);
-  //        expect(res.body).toHaveProperty('email', updatedUser.email);
-  //        expect(res.body).toHaveProperty('pseudo', updatedUser.pseudo);
-  //        expect(res.body).toHaveProperty('id', createdUser.id);
-  //      })
-  //  );
-  //});
+
+  it('should get user by id with admin', async () => {
+    user.password = bcrypt.hashSync('password', 10);
+    const createdUser = await repository.save(user);
+    const createdAdminUser = await repository.save(adminUser);
+
+    const infos =  { id: createdAdminUser.id, pseudo: createdAdminUser.pseudo, role: createdAdminUser.role };
+    const token = jwtService.sign(infos);
+
+    await logErrorResponse(
+      request(app.getHttpServer())
+        .get(`/users/${createdUser.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.body).toHaveProperty('id', createdUser.id);
+          expect(res.body).toHaveProperty('email', createdUser.email);
+          expect(res.body).toHaveProperty('pseudo', createdUser.pseudo);
+          expect(res.body).toHaveProperty('role', createdUser.role);
+        })
+    );
+  });
+
+  it('should update a user', async () => {
+    user.password = bcrypt.hashSync('password', 10);
+    const createdUser = await repository.save(user);
+
+    const infos = { id: createdUser.id, pseudo: createdUser.pseudo, role: createdUser.role };
+    const token = jwtService.sign(infos);
+
+    await logErrorResponse(
+      request(app.getHttpServer())
+        .put(`/users/${createdUser.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(updatedUser)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.body).toHaveProperty('email', updatedUser.email);
+          expect(res.body).toHaveProperty('pseudo', updatedUser.pseudo);
+          expect(res.body).toHaveProperty('id', createdUser.id);
+        })
+    );
+  });
+
+  it('should update a user with admin', async () => {
+    user.password = bcrypt.hashSync('password', 10);
+    const createdUser = await repository.save(user);
+    const createdAdminUser = await repository.save(adminUser);
+
+    const infos =  { id: createdAdminUser.id, pseudo: createdAdminUser.pseudo, role: createdAdminUser.role };
+    const token = jwtService.sign(infos);
+
+    await logErrorResponse(
+      request(app.getHttpServer())
+        .put(`/users/${createdUser.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(updatedUser)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.body).toHaveProperty('email', updatedUser.email);
+          expect(res.body).toHaveProperty('pseudo', updatedUser.pseudo);
+          expect(res.body).toHaveProperty('id', createdUser.id);
+        })
+    );
+  });
+
+  it('should delete a user', async () => {
+    user.password = bcrypt.hashSync('password', 10);
+    const createdUser = await repository.save(user);
+
+    const infos = { id: createdUser.id, pseudo: createdUser.pseudo, role: createdUser.role };
+    const token = jwtService.sign(infos);
+
+    await logErrorResponse(
+      request(app.getHttpServer())
+        .delete(`/users/${createdUser.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.body).toHaveProperty('message', 'User has been successfully deleted');
+        })
+    )
+  });
 });
