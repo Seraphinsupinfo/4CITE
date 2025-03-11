@@ -4,24 +4,25 @@ import { UserService } from '../../src/business/user.service';
 import { CreationUserObject, Role, UpdateUserObject, User } from '../../src/data_acces_layer/create-user.dto';
 import { Repository } from 'typeorm';
 import * as dotenv from 'dotenv';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '../../src/app.module';
-import bcrypt from 'bcryptjs/umd/types';
+import * as bcrypt from 'bcryptjs';
 
 dotenv.config();
 
-describe('UserService', () => {
+describe('UserController', () => {
   let repository: Repository<User>;
   let app: INestApplication;
+  let jwtService: JwtService;
 
   const user = new CreationUserObject();
   const updatedUser = new UpdateUserObject();
   const adminUser = new User();
 
-  beforeAll(async () => {
+    beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -52,7 +53,8 @@ describe('UserService', () => {
     }).compile();
 
     repository = module.get<Repository<User>>(getRepositoryToken(User));
-  });
+    jwtService = module.get<JwtService>(JwtService);
+    });
 
   beforeEach(async () => {
     await repository.delete({});
@@ -107,13 +109,44 @@ describe('UserService', () => {
   });
 
   it('should get user by id', async () => {
-    await logErrorResponse(
-      request(app.getHttpServer())
-        .get('/users')
-        .send(user)
-        .expect(201)
-    );
+    user.password = bcrypt.hashSync('password', 10);
+    const createdUser = await repository.save(user);
 
+    const infos =  { id: createdUser.id, pseudo: createdUser.pseudo, role: createdUser.role };
+    const token = jwtService.sign(infos);
 
+    request(app.getHttpServer())
+      .get(`/users/${createdUser.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect((res) => {
+        console.log('Response body:', res.body);
+        expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty('email', user.email);
+        expect(res.body).toHaveProperty('pseudo', user.pseudo);
+        expect(res.body).toHaveProperty('id', createdUser.id);
+        expect(res.body).toHaveProperty('role', createdUser.role);
+      });
   });
+//
+  //it('should update a user', async () => {
+  //  user.password = bcrypt.hashSync('password', 10);
+  //  const createdUser = await repository.save(user);
+//
+  //  const infos = { id: createdUser.id, pseudo: createdUser.pseudo, role: createdUser.role };
+  //  const token = jwtService.sign(infos);
+//
+  //  await logErrorResponse(
+  //    request(app.getHttpServer())
+  //      .put(`/users/${createdUser.id}`)
+  //      .set('Authorization', `Bearer ${token}`)
+  //      .send(updatedUser)
+  //      .expect((res) => {
+  //        console.log('Response body:', res.body);
+  //        expect(res.status).toBe(200);
+  //        expect(res.body).toHaveProperty('email', updatedUser.email);
+  //        expect(res.body).toHaveProperty('pseudo', updatedUser.pseudo);
+  //        expect(res.body).toHaveProperty('id', createdUser.id);
+  //      })
+  //  );
+  //});
 });
