@@ -24,6 +24,14 @@ jobs:
           node-version: '20.x'
 
       - name: npm install, build, and test
+        env:
+          TEST_DB_HOST: 'bjfbu2iwa3tkdwfqscx8-postgresql.services.clever-cloud.com'
+          TEST_DB_PORT: 50013
+          TEST_DB_USERNAME: 'ukfgiem2mfumrsrolkru'
+          TEST_DB_PASSWORD: 'Tbmd01ZF19z1RKBwPYSbLqjuCcWvrL'
+          TEST_DB_DATABASE: 'bjfbu2iwa3tkdwfqscx8'
+
+          JWT_SECRET: 'secret'
         run: |
           cd backend
           npm install
