@@ -18,7 +18,7 @@ const toastRef = ref<InstanceType<typeof ToastMessage> | null>(null);
 
 async function getBookings() {
   try {
-    const response = await api.get(`/users/${userStore.user.id}/bookings`, {
+    const response = await api.get(`/users/${userStore?.user?.id}/bookings`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       },
@@ -144,9 +144,9 @@ const handleDateChange = (reservation: IReservation) => {
   <toast-message ref="toastRef"></toast-message>
 
   <div class="container py-5">
-    <h2 v-if="userStore.user.role == 'admin'" class="mb-4">Gérer les réservations</h2>
+    <h2 v-if="userStore?.user?.role == 'admin'" class="mb-4">Gérer les réservations</h2>
     <h2 v-else class="mb-4">Mes réservations</h2>
-    <div class="mb-4 d-flex gap-3" v-if="userStore.user.role == 'admin'">
+    <div class="mb-4 d-flex gap-3" v-if="userStore?.user?.role == 'admin'">
       <input v-model="email" class="form-control" placeholder="Rechercher par email" />
       <input v-model="reservationId" class="form-control" placeholder="Rechercher par numéro de réservation" />
       <button class="btn btn-primary" @click="searchReservations">Rechercher</button>
@@ -174,7 +174,7 @@ const handleDateChange = (reservation: IReservation) => {
               v-model="reservation.startDate"
               style="max-width: 150px;"
               @change="handleDateChange(reservation)"
-              :disabled="userStore.user.role == 'admin'"
+              :disabled="userStore?.user?.role == 'admin'"
             />
             <input
               type="date"
@@ -182,20 +182,20 @@ const handleDateChange = (reservation: IReservation) => {
               v-model="reservation.endDate"
               style="max-width: 150px;"
               @change="handleDateChange(reservation)"
-              :disabled="userStore.user.role == 'admin'"
+              :disabled="userStore?.user?.role == 'admin'"
             />
           </div>
           <button class="btn btn-outline-primary ms-3" @click="consultItem(reservation.hotelId)">Afficher l'hôtel</button>
           <button
-            v-if="userStore.user.role != 'admin'"
+            v-if="userStore?.user?.role != 'admin'"
             class="btn btn-danger ms-3"
-            :disabled="!reservation.endDate || !canDelete(reservation.endDate)"
+            :disabled="!reservation.endDate || !canDelete(reservation.endDate.toString())"
             @click="removeReservation(reservation.id)"
           >
             Annuler la réservation
           </button>
           <button
-            v-if="reservation.isModified && userStore.user.role != 'admin'"
+            v-if="reservation.isModified && userStore?.user?.role != 'admin'"
             class="btn btn-success ms-3"
             @click="saveChanges(reservation)"
           >

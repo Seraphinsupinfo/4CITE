@@ -7,7 +7,7 @@ const userStore = useUserStore();
 const router = useRouter();
 
 onMounted(() => {
-  if (userStore.user.role !== "admin") {
+  if (userStore?.user?.role !== "admin") {
     router.push("/");
   }
 });

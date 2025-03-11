@@ -84,6 +84,7 @@ export const useUserStore = defineStore("user", () => {
         }
       });
 
+      //@ts-ignore
       user.value = { ...user.value, email, pseudo };
       localStorage.setItem("user", JSON.stringify(user.value));
 

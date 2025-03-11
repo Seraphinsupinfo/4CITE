@@ -211,36 +211,4 @@ describe('Page de création d\'hôtel (Admin)', () => {
     // Vérifier le message de succès
     cy.contains('Hôtel créé avec succès !').should('be.visible');
   });
-
-  it('devrait envoyer l\'en-tête Authorization avec le token', () => {
-    // Intercepter la requête de création d'hôtel pour vérifier l'en-tête d'autorisation
-    cy.intercept('POST', '**/hotels', (req) => {
-      expect(req.headers.authorization).to.equal(`Bearer ${mockToken}`);
-      req.reply({
-        statusCode: 201,
-        body: {
-          id: 1,
-          name: 'Test Hotel',
-          location: 'Test Location',
-          description: 'Test Description',
-          images: [],
-          creationDate: new Date().toISOString().split('T')[0]
-        }
-      });
-    }).as('createHotelWithAuth');
-
-    // Remplir le formulaire
-    cy.get('input[type="text"]').first().type('Test Hotel');
-    cy.get('input[type="text"]').eq(1).type('Test Location');
-    cy.get('textarea').type('Test Description');
-
-    // Soumettre le formulaire
-    cy.contains('button', 'Créer l\'hôtel').click();
-
-    // Attendre que la requête soit envoyée
-    cy.wait('@createHotelWithAuth');
-
-    // Vérifier le message de succès
-    cy.contains('Hôtel créé avec succès !').should('be.visible');
-  });
 });

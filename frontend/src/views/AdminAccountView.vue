@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useUserStore } from '@/stores/userStore';
+import { useUserStore } from '@/stores/UserStore.ts';
 import { useRouter } from 'vue-router';
 import api from "@/services/axiosConfig.ts";
 
@@ -33,6 +33,7 @@ const searchUser = async () => {
       errorMessage.value = "Utilisateur non trouvé.";
     }
   } catch (error) {
+    console.log(error);
     errorMessage.value = "Erreur lors de la recherche de l'utilisateur.";
   }
 };
@@ -41,7 +42,7 @@ const updateInfo = async () => {
   if (!user.value) return;
 
   try {
-    const response = await api.put(`/users/${searchedId.value}`, {
+    await api.put(`/users/${searchedId.value}`, {
       pseudo: newPseudo.value,
       email: newEmail.value,
     }, {
@@ -50,6 +51,7 @@ const updateInfo = async () => {
 
     successMessage.value = "Informations mises à jour.";
   } catch (error) {
+    //@ts-ignore
     errorMessage.value = `Échec de la mise à jour. ${error.response.data.message}`;
   }
 };

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useUserStore } from '@/stores/userStore';
+import { useUserStore } from '@/stores/UserStore.ts';
 import { useAuthStore } from "@/stores/AuthStore.ts";
 import { useRouter } from "vue-router";
 import api from "@/services/axiosConfig.ts";
@@ -23,6 +23,7 @@ const updateUserData = async () => {
     statusMessage.value = "Mise à jour réussie.";
     statusType.value = "success";
   } catch (error) {
+    //@ts-ignore
     statusMessage.value = `Échec de la mise à jour. ${error.response.data.message}`;
     statusType.value = "error";
   }
@@ -30,7 +31,7 @@ const updateUserData = async () => {
 
 const deleteUser = async () => {
   try {
-    await api.delete(`users/${userStore.user.id}`, {
+    await api.delete(`users/${userStore?.user?.id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -39,7 +40,8 @@ const deleteUser = async () => {
     statusMessage.value = "Compte supprimé avec succès.";
     statusType.value = "success";
     setTimeout(() => router.push('/'), 1000);
-  } catch (error) {
+  } catch(error) {
+    console.log(error);
     statusMessage.value = "Échec de la suppression du compte.";
     statusType.value = "error";
   }

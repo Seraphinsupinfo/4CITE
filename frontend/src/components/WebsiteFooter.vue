@@ -1,7 +1,3 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
   <footer class="bg-primary-gradient">
     <div class="container py-4 py-lg-5">

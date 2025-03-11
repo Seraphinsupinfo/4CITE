@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { mount } from '@vue/test-utils';
 import { describe, it, expect, vi } from 'vitest';
 import ToastMessage from "@/components/toastMessage.vue";

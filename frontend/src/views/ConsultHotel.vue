@@ -12,7 +12,7 @@ const props = defineProps({
 const userStore = useUserStore();
 const toastRef = ref<InstanceType<typeof ToastMessage> | null>(null);
 const mounted = ref(false);
-const isAdmin = userStore.user.role === "admin";
+const isAdmin = userStore?.user?.role === "admin";
 
 const formatDate = (date: Date) => date.toISOString().split('T')[0];
 const today = new Date();
@@ -82,7 +82,7 @@ async function bookHotel() {
     await api.post(`/bookings`, {
       startDate: startDate.value,
       endDate: endDate.value,
-      userId: userStore.user.id,
+      userId: userStore?.user?.id,
       hotelId: parseInt(props.id as unknown as string, 10),
     }, {
       headers: {
@@ -92,6 +92,7 @@ async function bookHotel() {
     toastRef.value?.showToast('Réservation effectuée avec succès!', 'success');
   } catch (error) {
     console.error(error);
+    //@ts-ignore
     toastRef.value?.showToast(`Erreur lors de la réservation. Veuillez réessayer. ${error.response.data.message}`, 'error');
   }
 }

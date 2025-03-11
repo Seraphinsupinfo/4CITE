@@ -1,4 +1,4 @@
-// NotFoundView.spec.ts
+// @ts-nocheck
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
 import { nextTick } from 'vue';

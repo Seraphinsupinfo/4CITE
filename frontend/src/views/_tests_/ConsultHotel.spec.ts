@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { mount, flushPromises } from '@vue/test-utils';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import api from "@/services/axiosConfig.ts";

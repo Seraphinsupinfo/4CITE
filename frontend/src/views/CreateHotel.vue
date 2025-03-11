@@ -7,7 +7,7 @@ import { useUserStore } from "@/stores/UserStore.ts";
 const router = useRouter();
 const userStore = useUserStore();
 
-if (userStore.user.role !== "admin") {
+if (userStore?.user?.role !== "admin") {
   router.push("/");
 }
 

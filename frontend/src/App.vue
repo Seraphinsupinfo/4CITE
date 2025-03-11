@@ -4,8 +4,8 @@ import WebsiteHeader from "@/components/WebsiteHeader.vue";
 import WebsiteFooter from "@/components/WebsiteFooter.vue";
 import {onMounted} from "vue";
 import {loadScript} from "@/assets/scripts/LoadExternalScripts.ts";
-import("/public/js/bs-init.js?h=4f6030575bc01c04c2cd8963f3a0d244")
-import("/public/js/bold-and-bright.js?h=78569998362133b84a76614652f3624f")
+//import("/public/js/bs-init.js?h=4f6030575bc01c04c2cd8963f3a0d244")
+//import("/public/js/bold-and-bright.js?h=78569998362133b84a76614652f3624f")
 
 onMounted(async () => {
   try {

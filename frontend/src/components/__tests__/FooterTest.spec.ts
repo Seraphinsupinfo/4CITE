@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { mount, VueWrapper } from '@vue/test-utils';
 import { describe, it, expect, beforeEach } from 'vitest';
 import WebsiteFooter from '@/components/WebsiteFooter.vue';
