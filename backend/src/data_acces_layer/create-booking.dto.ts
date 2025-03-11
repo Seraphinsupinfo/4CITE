@@ -35,3 +35,21 @@ export class Booking {
   @JoinColumn({ name: 'hotelId' })
   hotel: Hotel;
 }
+
+export class CreateBookingDto {
+  @ApiProperty({ example: '2021-01-01', description: 'The start date of the booking' })
+  @IsDate()
+  startDate: Date;
+
+  @ApiProperty({ example: '2021-01-02', description: 'The end date of the booking' })
+  @IsDate()
+  endDate: Date;
+
+  @ApiProperty({ example: 1, description: 'The user ID of the booking' })
+  @IsInt()
+  userId: number;
+
+  @ApiProperty({ example: 1, description: 'The hotel ID of the booking' })
+  @IsInt()
+  hotelId: number;
+}

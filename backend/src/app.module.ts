@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Hotel } from './data_acces_layer/create-hotel.dto';
 import { User } from './data_acces_layer/create-user.dto';
 import { Booking } from './data_acces_layer/create-booking.dto';
@@ -16,17 +16,35 @@ import { BookingService } from './business/booking.service';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST as string,
-      port: parseInt(process.env.DB_PORT as string, 10),
-      username: process.env.DB_USERNAME as string,
-      password: process.env.DB_PASSWORD as string,
-      database: process.env.DB_DATABASE as string,
-      entities: [Hotel, User, Booking],
-      synchronize: false,
-      logging: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const isTestEnvironment = process.env.NODE_ENV === 'test';
+
+        return {
+          type: 'postgres',
+          host: isTestEnvironment
+            ? configService.get('TEST_DB_HOST')
+            : configService.get('DB_HOST'),
+          port: isTestEnvironment
+            ? parseInt(<string>configService.get('TEST_DB_PORT'))
+            : parseInt(<string>configService.get('DB_PORT')),
+          username: isTestEnvironment
+            ? configService.get('TEST_DB_USERNAME')
+            : configService.get('DB_USERNAME'),
+          password: isTestEnvironment
+            ? configService.get('TEST_DB_PASSWORD')
+            : configService.get('DB_PASSWORD'),
+          database: isTestEnvironment
+            ? configService.get('TEST_DB_DATABASE')
+            : configService.get('DB_DATABASE'),
+          entities: [User],
+          synchronize: false,
+        };
+      },
     }),
     TypeOrmModule.forFeature([Hotel, User, Booking]),
     AuthModule,

@@ -3,7 +3,7 @@ import { IsString, IsEmail, MinLength, Matches, IsOptional } from 'class-validat
 import { ApiProperty } from '@nestjs/swagger';
 import { optionalRequire } from '@nestjs/core/helpers/optional-require';
 
-enum Role {
+export enum Role {
   USER = 'user',
   ADMIN = 'admin',
   SUPER_ADMIN = 'super_admin',

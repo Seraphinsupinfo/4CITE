@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as dotenv from 'dotenv';
-import { HotelService } from '../src/business/hotel.service';
-import { Hotel } from '../src/data_acces_layer/create-hotel.dto';
+import { HotelService } from '../../src/business/hotel.service';
+import { Hotel } from '../../src/data_acces_layer/create-hotel.dto';
 
 dotenv.config();
 

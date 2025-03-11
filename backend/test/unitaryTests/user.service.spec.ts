@@ -1,10 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { UserService } from '../src/business/user.service';
-import { CreationUserObject, User, UpdateUserObject } from '../src/data_acces_layer/create-user.dto';
+import { UserService } from '../../src/business/user.service';
+import { CreationUserObject, User, UpdateUserObject } from '../../src/data_acces_layer/create-user.dto';
 import { Repository } from 'typeorm';
 import * as dotenv from 'dotenv';
 import * as bcrypt from 'bcrypt';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 
 dotenv.config();
 
@@ -30,6 +32,11 @@ describe('UserService', () => {
           synchronize: false,
         }),
         TypeOrmModule.forFeature([User]),
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+        JwtModule.register({
+          secret: process.env.JWT_SECRET,
+          signOptions: { expiresIn: '60s' },
+        }),
       ],
       providers: [UserService],
     }).compile();

@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@ne
 import { BookingService } from '../business/booking.service';
 import { AccesAutorisationGuard, JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Request } from 'express';
-import { Booking } from '../data_acces_layer/create-booking.dto';
+import { Booking, CreateBookingDto } from '../data_acces_layer/create-booking.dto';
 
 @ApiTags('bookings')
 @Controller('bookings')
@@ -16,7 +16,7 @@ export class BookingController {
   @ApiOperation({ summary: 'Create a new booking' })
   @ApiResponse({ status: 201, description: 'The booking has been successfully created.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
-  async createBooking(@Body() booking: Booking, @Req() req: Request) {
+  async createBooking(@Body() booking: CreateBookingDto, @Req() req: Request) {
     if (booking.userId !== (req.user as { id: number }).id) {
       throw new BadRequestException('You are not allowed to create a booking for another user');
     }

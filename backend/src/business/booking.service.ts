@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { omit } from 'lodash';
-import { Booking } from '../data_acces_layer/create-booking.dto';
+import { Booking, CreateBookingDto } from '../data_acces_layer/create-booking.dto';
 
 @Injectable()
 export class BookingService {
@@ -12,14 +12,13 @@ export class BookingService {
     private readonly bookingRepository: Repository<Booking>,
   ) {}
 
-  async createBooking(bookingToCreate: Booking): Promise<Partial<Booking>> {
+  async createBooking(bookingToCreate: CreateBookingDto): Promise<Partial<Booking>> {
     const { startDate, endDate, userId, hotelId } = bookingToCreate;
 
     if (startDate >= endDate) {
       throw new BadRequestException('Start date must be before end date');
     }
 
-    console.log('startDate', startDate, 'new Date()', new Date());
     if (new Date(startDate) < new Date()) {
       throw new BadRequestException('Start date must be in the future');
     }
@@ -50,14 +49,17 @@ export class BookingService {
   }
 
   async getBookingById(id: number): Promise<Booking | null> {
-    const booking = this.bookingRepository.findOne({where: { id }});
+    const booking = await this.bookingRepository.findOne({
+      where: { id },
+      relations: ['hotel'],
+    });
     if (booking == null) {
       throw new NotFoundException('Booking not found');
     }
     return booking;
   }
 
-  async updateBooking(id: number, updatedBooking: Booking, callingUserId: number): Promise<Booking> {
+  async updateBooking(id: number, updatedBooking: CreateBookingDto, callingUserId: number): Promise<Booking> {
     const booking = await this.bookingRepository.findOne({ where: { id } });
     if (!booking) {
       throw new NotFoundException('Booking not found');
