@@ -23,38 +23,39 @@ describe('UserController', () => {
   const adminUser = new User();
 
     beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+      jest.setTimeout(30000);
+      const moduleFixture: TestingModule = await Test.createTestingModule({
+        imports: [AppModule],
+      }).compile();
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
+      app = moduleFixture.createNestApplication();
+      await app.init();
 
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        TypeOrmModule.forRoot({
-          type: 'postgres',
-          host: process.env.TEST_DB_HOST as string,
-          port: parseInt(process.env.TEST_DB_PORT as string, 10),
-          username: process.env.TEST_DB_USERNAME as string,
-          password: process.env.TEST_DB_PASSWORD as string,
-          database: process.env.TEST_DB_DATABASE as string,
-          entities: [User],
-          synchronize: false,
-        }),
-        TypeOrmModule.forFeature([User]),
-        PassportModule.register({ defaultStrategy: 'jwt' }),
-        JwtModule.register({
-          secret: process.env.JWT_SECRET,
-          signOptions: { expiresIn: '60s' },
-        }),
-      ],
-      providers: [UserService],
-    }).compile();
+      const module: TestingModule = await Test.createTestingModule({
+        imports: [
+          TypeOrmModule.forRoot({
+            type: 'postgres',
+            host: process.env.TEST_DB_HOST as string,
+            port: parseInt(process.env.TEST_DB_PORT as string, 10),
+            username: process.env.TEST_DB_USERNAME as string,
+            password: process.env.TEST_DB_PASSWORD as string,
+            database: process.env.TEST_DB_DATABASE as string,
+            entities: [User],
+            synchronize: false,
+          }),
+          TypeOrmModule.forFeature([User]),
+          PassportModule.register({ defaultStrategy: 'jwt' }),
+          JwtModule.register({
+            secret: process.env.JWT_SECRET,
+            signOptions: { expiresIn: '60s' },
+          }),
+        ],
+        providers: [UserService],
+      }).compile();
 
-    repository = module.get<Repository<User>>(getRepositoryToken(User));
-    jwtService = module.get<JwtService>(JwtService);
-    });
+      repository = module.get<Repository<User>>(getRepositoryToken(User));
+      jwtService = module.get<JwtService>(JwtService);
+    }, 30000);
 
   beforeEach(async () => {
     await repository.delete({});
@@ -99,7 +100,6 @@ describe('UserController', () => {
         .post('/users')
         .send(user)
         .expect((res) => {
-          console.log('Response body:', res.body);
           expect(res.status).toBe(201);
           expect(res.body).toHaveProperty('email', 'test@exemple.com');
           expect(res.body).toHaveProperty('pseudo', 'test');
@@ -115,11 +115,10 @@ describe('UserController', () => {
     const infos =  { id: createdUser.id, pseudo: createdUser.pseudo, role: createdUser.role };
     const token = jwtService.sign(infos);
 
-    request(app.getHttpServer())
+    await request(app.getHttpServer())
       .get(`/users/${createdUser.id}`)
       .set('Authorization', `Bearer ${token}`)
       .expect((res) => {
-        console.log('Response body:', res.body);
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty('email', user.email);
         expect(res.body).toHaveProperty('pseudo', user.pseudo);
