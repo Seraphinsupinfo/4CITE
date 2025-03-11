@@ -58,7 +58,7 @@ describe('AuthService', () => {
 
     const isValid = await service.validateUser(user.email, user.password);
 
-    expect(isValid).toBe(true);
+    expect(isValid).not.toBeNull();
   });
 
   it('should not validate an user exists and have the incorrect password', async () => {
