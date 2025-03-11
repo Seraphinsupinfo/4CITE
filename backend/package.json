@@ -56,6 +56,8 @@
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.7",
     "@types/supertest": "^6.0.2",
+    "@types/bcrypt": "^5.0.2",
+    "@types/bcryptjs": "^2.4.6",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
     "cross-env": "^7.0.3",
