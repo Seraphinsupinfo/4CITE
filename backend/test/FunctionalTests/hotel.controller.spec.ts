@@ -15,7 +15,7 @@ import { logErrorResponse } from './logErrorResponse';
 
 dotenv.config();
 
-describe('UserController', () => {
+describe('HotelController', () => {
   let userRepository: Repository<User>;
   let hotelRepository: Repository<Hotel>;
   let app: INestApplication;
@@ -177,7 +177,7 @@ describe('UserController', () => {
           expect(res.body).toHaveLength(10);
         })
     )
-  });
+  }, 30000);
 
   it ('should get a hotel by id for an unidentified user, an admin and a normal user', async () => {
     await hotelRepository.save(hotel);

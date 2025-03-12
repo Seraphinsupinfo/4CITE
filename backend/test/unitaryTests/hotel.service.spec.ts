@@ -7,7 +7,7 @@ import { Hotel } from '../../src/data_acces_layer/create-hotel.dto';
 
 dotenv.config();
 
-describe('UserService', () => {
+describe('HotelService', () => {
   let service: HotelService;
   let repository: Repository<Hotel>;
 
