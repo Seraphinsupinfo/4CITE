@@ -23,8 +23,10 @@ describe('UserController', () => {
 
   const user = new User();
   const adminUser = new User();
+
   const hotel = new Hotel();
   const updateHotel = new Hotel();
+
   let userToken: string;
   let adminToken: string;
 
@@ -65,6 +67,7 @@ describe('UserController', () => {
 
   beforeEach(async () => {
     await userRepository.delete({});
+    await hotelRepository.delete({});
 
     user.email = 'test@exemple.com';
     user.pseudo = 'test';
