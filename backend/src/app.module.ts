@@ -41,7 +41,7 @@ import { BookingService } from './business/booking.service';
           database: isTestEnvironment
             ? configService.get('TEST_DB_DATABASE')
             : configService.get('DB_DATABASE'),
-          entities: [User],
+          entities: [User, Hotel, Booking],
           synchronize: false,
         };
       },

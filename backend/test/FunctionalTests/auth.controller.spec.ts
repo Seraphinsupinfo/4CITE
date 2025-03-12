@@ -9,6 +9,7 @@ import { INestApplication } from '@nestjs/common';
 import { AppModule } from '../../src/app.module';
 import * as bcrypt from 'bcryptjs';
 import { JwtModule, JwtService } from '@nestjs/jwt';
+import { logErrorResponse } from './logErrorResponse';
 
 dotenv.config();
 
@@ -64,21 +65,6 @@ describe('UserController', () => {
     await repository.save(user);
   });
 
-  const logErrorResponse = async (req) => {
-    try {
-      return await req;
-    } catch (error) {
-      console.log('Test failed with error:');
-      if (error.response) {
-        console.log('Status:', error.response.status);
-        console.log('Body:', error.response.body);
-      } else {
-        console.log(error);
-      }
-      throw error;
-    }
-  };
-
   it('should get a token with user informations', async () => {
     await logErrorResponse(
       request(app.getHttpServer())
@@ -94,6 +80,15 @@ describe('UserController', () => {
           expect(decodedToken).toHaveProperty('pseudo', user.pseudo);
           expect(decodedToken).toHaveProperty('role', user.role);
         })
+    );
+  });
+
+  it ('should return 401 if the user does not exist', async () => {
+    await logErrorResponse(
+      request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ email: 'test@example.com', password: 'password' })
+        .expect(401)
     );
   });
 });

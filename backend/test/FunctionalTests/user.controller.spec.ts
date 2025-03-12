@@ -10,6 +10,7 @@ import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '../../src/app.module';
 import * as bcrypt from 'bcryptjs';
+import { logErrorResponse } from './logErrorResponse';
 
 dotenv.config();
 
@@ -78,21 +79,6 @@ describe('UserController', () => {
 
     await repository.save(adminUser);
   });
-
-  const logErrorResponse = async (req) => {
-    try {
-      return await req;
-    } catch (error) {
-      console.log('Test failed with error:');
-      if (error.response) {
-        console.log('Status:', error.response.status);
-        console.log('Body:', error.response.body);
-      } else {
-        console.log(error);
-      }
-      throw error;
-    }
-  };
 
   it('should create a user', async () => {
     await logErrorResponse(
