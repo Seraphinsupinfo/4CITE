@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
 import { createRouter, createWebHistory } from 'vue-router';
 import { setActivePinia, createPinia } from 'pinia';
-import { useUserStore } from '@/stores/userStore';
+import { useUserStore } from '@/stores/UserStore';
 import api from '@/services/axiosConfig';
 import AdminAccountView from '@/views/AdminAccountView.vue';
 
