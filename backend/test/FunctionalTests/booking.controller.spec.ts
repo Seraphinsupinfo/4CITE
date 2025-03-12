@@ -17,7 +17,7 @@ import { BookingService } from '../../src/business/booking.service';
 
 dotenv.config();
 
-describe('UserController', () => {
+describe('BookingController', () => {
   let userRepository: Repository<User>;
   let hotelRepository: Repository<Hotel>;
   let bookingRepository: Repository<Booking>;

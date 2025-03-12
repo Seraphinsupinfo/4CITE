@@ -13,7 +13,7 @@ import { logErrorResponse } from './logErrorResponse';
 
 dotenv.config();
 
-describe('UserController', () => {
+describe('AuthController', () => {
   let repository: Repository<User>;
   let app: INestApplication;
   let jwtService: JwtService;
