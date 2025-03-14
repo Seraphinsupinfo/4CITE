@@ -54,7 +54,7 @@ describe('BookingController', () => {
           password: process.env.TEST_DB_PASSWORD as string,
           database: process.env.TEST_DB_DATABASE as string,
           entities: [User, Hotel, Booking],
-          synchronize: false,
+          synchronize: true,
         }),
         TypeOrmModule.forFeature([User, Hotel, Booking]),
         JwtModule.register({

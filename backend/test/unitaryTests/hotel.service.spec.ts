@@ -24,7 +24,7 @@ describe('HotelService', () => {
           password: process.env.TEST_DB_PASSWORD as string,
           database: process.env.TEST_DB_DATABASE as string,
           entities: [Hotel],
-          synchronize: false,
+          synchronize: true,
         }),
         TypeOrmModule.forFeature([Hotel]),
       ],

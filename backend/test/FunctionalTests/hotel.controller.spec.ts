@@ -49,7 +49,7 @@ describe('HotelController', () => {
           password: process.env.TEST_DB_PASSWORD as string,
           database: process.env.TEST_DB_DATABASE as string,
           entities: [User, Hotel],
-          synchronize: false,
+          synchronize: true,
         }),
         TypeOrmModule.forFeature([User, Hotel]),
         JwtModule.register({

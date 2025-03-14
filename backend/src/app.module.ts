@@ -42,7 +42,7 @@ import { BookingService } from './business/booking.service';
             ? configService.get('TEST_DB_DATABASE')
             : configService.get('DB_DATABASE'),
           entities: [User, Hotel, Booking],
-          synchronize: false,
+          synchronize: true,
         };
       },
     }),

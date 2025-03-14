@@ -39,7 +39,7 @@ describe('AuthController', () => {
           password: process.env.TEST_DB_PASSWORD as string,
           database: process.env.TEST_DB_DATABASE as string,
           entities: [User],
-          synchronize: false,
+          synchronize: true,
         }),
         TypeOrmModule.forFeature([User]),
         JwtModule.register({
